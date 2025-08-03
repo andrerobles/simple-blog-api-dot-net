@@ -21,6 +21,11 @@ namespace simple_blog_api_dot_net.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PostCreateRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);        
+            }
+        
             var post = await _postService.CreateAsync(request);
             return Ok(post);
         }
@@ -40,8 +45,12 @@ namespace simple_blog_api_dot_net.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] PostCreateRequest request)
+        public async Task<IActionResult> Update(int id, [FromBody] PostUpdateRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);        
+            }
             var updated = await _postService.UpdateAsync(id, request);
             return updated == null ? NotFound() : Ok(updated);
         }

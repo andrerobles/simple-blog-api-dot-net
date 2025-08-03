@@ -18,7 +18,7 @@ namespace simple_blog_api_dot_net.Services
             var post = new Post {
                 Title = request.Title,
                 Content = request.Content,
-                UserId = request.UserId,
+                UserId = request.UserId.Value,
                 CreatedAt = DateTime.UtcNow
             };
             _dbContext.Posts.Add(post);

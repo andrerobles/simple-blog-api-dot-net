@@ -1,13 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace simple_blog_api_dot_net.Dto
 {
     public class UserLoginRequest
     {
-        public required string Email { get; set; }
-        public required string Password { get; set; }
+        [Required(ErrorMessage = "O campo email é obrigatório")]
+        public string? Email { get; set; }
+        [Required(ErrorMessage = "O campo password é obrigatório")]
+        public string? Password { get; set; }
     }
 }
