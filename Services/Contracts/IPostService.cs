@@ -1,3 +1,4 @@
+using simple_blog_api_dot_net.Interfaces;
 using simple_blog_api_dot_net.Dto;
 
 namespace simple_blog_api_dot_net.Services.Contracts

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using simple_blog_api_dot_net.Data;
-using simple_blog_api_dot_net.Dto;
+using simple_blog_api_dot_net.Interfaces;
 using simple_blog_api_dot_net.Services;
 using simple_blog_api_dot_net.Services.Contracts;
 

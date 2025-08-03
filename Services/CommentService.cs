@@ -3,6 +3,7 @@ using simple_blog_api_dot_net.Dto;
 using simple_blog_api_dot_net.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using simple_blog_api_dot_net.Exceptions;
+using simple_blog_api_dot_net.Interfaces;
 
 namespace simple_blog_api_dot_net.Services
 {
@@ -32,8 +33,8 @@ namespace simple_blog_api_dot_net.Services
 
             var comment = new Comment {
                 Content = request.Content,
-                UserId = request.UserId,
-                PostId = request.PostId,
+                UserId = request.UserId.Value,
+                PostId = request.PostId.Value,
                 CreatedAt = DateTime.UtcNow
             };
             _dbContext.Comments.Add(comment);

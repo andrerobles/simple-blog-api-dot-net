@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using simple_blog_api_dot_net.Interfaces;
 
 namespace simple_blog_api_dot_net.Services
 {

@@ -1,4 +1,4 @@
-namespace simple_blog_api_dot_net.Dto
+namespace simple_blog_api_dot_net.Interfaces
 {
     public class JwtSettings
     {

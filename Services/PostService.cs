@@ -3,6 +3,7 @@ using simple_blog_api_dot_net.Dto;
 using simple_blog_api_dot_net.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using simple_blog_api_dot_net.Exceptions;
+using simple_blog_api_dot_net.Interfaces;
 
 namespace simple_blog_api_dot_net.Services
 {
