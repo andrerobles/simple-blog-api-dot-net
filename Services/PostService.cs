@@ -4,15 +4,18 @@ using simple_blog_api_dot_net.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using simple_blog_api_dot_net.Exceptions;
 using simple_blog_api_dot_net.Interfaces;
+using simple_blog_api_dot_net.WebSockets;
 
 namespace simple_blog_api_dot_net.Services
 {
     public class PostService : IPostService
     {
         private readonly AppDbContext _dbContext;
-        public PostService(AppDbContext dbContext)
+        private readonly PostWebSocketHandler _wsHandler;
+        public PostService(AppDbContext dbContext, PostWebSocketHandler wsHandler)
         {
             _dbContext = dbContext;
+            _wsHandler = wsHandler;
         }
 
         public async Task<PostResponse> CreateAsync(PostCreateRequest request) {
@@ -24,7 +27,11 @@ namespace simple_blog_api_dot_net.Services
             };
             _dbContext.Posts.Add(post);
             await _dbContext.SaveChangesAsync();
-            return MapToResponse(post);
+
+            var response = MapToResponse(post);
+            await _wsHandler.BroadcastAsync(System.Text.Json.JsonSerializer.Serialize(response));
+
+            return response;
         }
 
         public async Task<IEnumerable<PostResponse>> GetAllAsync()
