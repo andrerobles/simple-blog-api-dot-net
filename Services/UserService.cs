@@ -25,7 +25,7 @@ namespace simple_blog_api_dot_net.Services
         public async Task<User> RegisterAsync(UserRegisterRequest request)
         {
             if (_dbContext.Users.Any(u => u.Email == request.Email))
-                throw new Exception("Email already registered.");
+                throw new Exception("O e-mail já está em uso.");
 
             var user = new User
             {
@@ -44,12 +44,12 @@ namespace simple_blog_api_dot_net.Services
         {
             var user = _dbContext.Users.SingleOrDefault(u => u.Email == request.Email);
             if (user == null)
-                throw new Exception("Invalid credentials.");
+                throw new Exception("Credenciais inválidas.");
 
             bool valid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
             if (!valid)
             {
-                throw new Exception("Invalid credentials.");
+                throw new Exception("Credenciais inválidas.");
             }
                 
             var token = GenerateJwtToken(user);

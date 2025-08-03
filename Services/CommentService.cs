@@ -2,6 +2,7 @@ using simple_blog_api_dot_net.Data;
 using simple_blog_api_dot_net.Dto;
 using simple_blog_api_dot_net.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
+using simple_blog_api_dot_net.Exceptions;
 
 namespace simple_blog_api_dot_net.Services
 {
@@ -15,6 +16,20 @@ namespace simple_blog_api_dot_net.Services
         }
         
         public async Task<CommentResponse> CreateAsync(CommentCreateRequest request) {
+
+
+            var user = await _dbContext.Users.FindAsync(request.UserId);
+            if (user == null)
+            {
+                throw new NotFoundException($"O usuário não foi encontrado.");
+            }
+
+            var post = await _dbContext.Posts.FindAsync(request.PostId);
+            if (post == null)
+            {
+                throw new NotFoundException($"O comentário não foi encontrado.");
+            }
+
             var comment = new Comment {
                 Content = request.Content,
                 UserId = request.UserId,
@@ -33,7 +48,11 @@ namespace simple_blog_api_dot_net.Services
 
         public async Task<bool> DeleteAsync(int id) {
             var comment = await _dbContext.Comments.FindAsync(id);
-            if (comment == null) return false;
+            if (comment == null)
+            {
+                throw new NotFoundException($"Comment with id {id} not found.");
+            }
+
             _dbContext.Comments.Remove(comment);
             await _dbContext.SaveChangesAsync();
             return true;

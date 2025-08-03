@@ -2,6 +2,7 @@ using simple_blog_api_dot_net.Data;
 using simple_blog_api_dot_net.Dto;
 using simple_blog_api_dot_net.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
+using simple_blog_api_dot_net.Exceptions;
 
 namespace simple_blog_api_dot_net.Services
 {
@@ -33,13 +34,21 @@ namespace simple_blog_api_dot_net.Services
 
         public async Task<PostResponse> GetByIdAsync(int id) {
             var post = await _dbContext.Posts.FindAsync(id);
-            return post == null ? null : MapToResponse(post);
+            if (post == null)
+            {
+                throw new NotFoundException("O Post não foi encontrado.");
+            }
+
+            return MapToResponse(post);
         }
 
         public async Task<PostResponse> UpdateAsync(int id, PostCreateRequest request) {
             var post = await _dbContext.Posts.FindAsync(id);
-            if (post == null) return null;
-
+            if (post == null)
+            {
+                throw new NotFoundException("O Post não foi encontrado.");
+            }
+        
             post.Title = request.Title;
             post.Content = request.Content;
             await _dbContext.SaveChangesAsync();
@@ -48,7 +57,10 @@ namespace simple_blog_api_dot_net.Services
 
         public async Task<bool> DeleteAsync(int id) {
             var post = await _dbContext.Posts.FindAsync(id);
-            if (post == null) return false;
+            if (post == null)
+            {
+                throw new NotFoundException("O Post não foi encontrado.");
+            }
 
             _dbContext.Posts.Remove(post);
             await _dbContext.SaveChangesAsync();
