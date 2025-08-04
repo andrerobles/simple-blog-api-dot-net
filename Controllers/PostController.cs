@@ -8,7 +8,6 @@ using simple_blog_api_dot_net.Exceptions;
 namespace simple_blog_api_dot_net.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     public class PostController : Controller
     {
         private readonly ILogger<PostController> _logger;
@@ -20,19 +19,8 @@ namespace simple_blog_api_dot_net.Controllers
             _postService = postService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] PostCreateRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);        
-            }
-        
-            var post = await _postService.CreateAsync(request);
-            return Ok(post);
-        }
-
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var posts = await _postService.GetAllAsync();
@@ -40,13 +28,28 @@ namespace simple_blog_api_dot_net.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
             var post = await _postService.GetByIdAsync(id);
             return post == null ? NotFound() : Ok(post);
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Create([FromBody] PostCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var post = await _postService.CreateAsync(request);
+            return Ok(post);
+        }
+
         [HttpPut("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> Update(int id, [FromBody] PostUpdateRequest request)
         {
             if (!ModelState.IsValid)
@@ -72,6 +75,7 @@ namespace simple_blog_api_dot_net.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var currentUserId = User.GetUserId();

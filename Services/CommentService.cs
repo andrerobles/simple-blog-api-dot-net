@@ -22,13 +22,13 @@ namespace simple_blog_api_dot_net.Services
             var user = await _dbContext.Users.FindAsync(request.UserId);
             if (user == null)
             {
-                throw new NotFoundException($"O usuário não foi encontrado.");
+                throw new NotFoundException("O usuário não foi encontrado.");
             }
 
             var post = await _dbContext.Posts.FindAsync(request.PostId);
             if (post == null)
             {
-                throw new NotFoundException($"O comentário não foi encontrado.");
+                throw new NotFoundException("O comentário não foi encontrado.");
             }
 
             var comment = new Comment {
