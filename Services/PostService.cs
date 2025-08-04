@@ -50,11 +50,16 @@ namespace simple_blog_api_dot_net.Services
             return MapToResponse(post);
         }
 
-        public async Task<PostResponse> UpdateAsync(int id, PostCreateRequest request) {
+        public async Task<PostResponse> UpdateAsync(int id, PostCreateRequest request, int currentUserId) {
             var post = await _dbContext.Posts.FindAsync(id);
             if (post == null)
             {
                 throw new NotFoundException("O Post não foi encontrado.");
+            }
+
+            if (post.UserId != currentUserId)
+            {
+                throw new UnauthorizedAccessException("O usuário não tem permissão para atualizar este post.");        
             }
         
             post.Title = request.Title;
@@ -63,11 +68,16 @@ namespace simple_blog_api_dot_net.Services
             return MapToResponse(post);
         }
 
-        public async Task<bool> DeleteAsync(int id) {
+        public async Task<bool> DeleteAsync(int id, int currentUserId) {
             var post = await _dbContext.Posts.FindAsync(id);
             if (post == null)
             {
                 throw new NotFoundException("O Post não foi encontrado.");
+            }
+
+            if (post.UserId != currentUserId)
+            {
+                throw new UnauthorizedAccessException("O usuário não tem permissão para atualizar este post.");        
             }
 
             _dbContext.Posts.Remove(post);

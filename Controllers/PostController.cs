@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using simple_blog_api_dot_net.Dto;
 using simple_blog_api_dot_net.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
+using simple_blog_api_dot_net.Extensions;
+using simple_blog_api_dot_net.Exceptions;
 
 namespace simple_blog_api_dot_net.Controllers
 {
@@ -49,17 +51,43 @@ namespace simple_blog_api_dot_net.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);        
+                return BadRequest(ModelState);
             }
-            var updated = await _postService.UpdateAsync(id, request);
-            return updated == null ? NotFound() : Ok(updated);
+
+            var currentUserId = User.GetUserId();
+
+            try
+            {
+                var updated = await _postService.UpdateAsync(id, request, currentUserId);
+                return Ok(updated);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var success = await _postService.DeleteAsync(id);
-            return success ? NoContent() : NotFound();
+            var currentUserId = User.GetUserId();
+            try
+            {
+                var success = await _postService.DeleteAsync(id, currentUserId);
+                return NoContent();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
     }
 }
